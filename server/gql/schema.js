@@ -30,6 +30,19 @@ const typeDefs= gql`
         typeFile:String
         createAt:String
     }
+    type Comment{
+        idPublication:ID,
+        idUser:User,
+        comment:String,
+        createAt:String
+    }
+    type FeedPublication{
+        id:ID
+        idUser:User
+        file:String
+        typeFile: String
+        createAt:String
+    }
     
     input UserInput{
         # el uso de "!" significa que es obligatorio
@@ -50,6 +63,10 @@ const typeDefs= gql`
         siteWeb:String
         description:String
     }
+    input CommentInput{
+        idPublication:ID,
+        comment: String
+    }
 
     type Query{
         # User
@@ -59,8 +76,16 @@ const typeDefs= gql`
         isFollow(username:String!) : Boolean
         getFollowers(username:String!) : [User]
         getFolloweds(username:String!) :[User]
+        getNotFolloweds: [User]
         #Publication
         getPublications(username:String!) : [Publication]
+        getPublicationsFollowers: [FeedPublication]
+        #Comment
+        getComment(idPublication: ID!) : [Comment]
+        #Like
+        isLike(idPublication:ID!) : Boolean
+        countLikes(idPublication: ID!) : Int
+
     }
 
     type Mutation{
@@ -77,6 +102,14 @@ const typeDefs= gql`
 
         ##Publication
         publish(file: Upload) : Publish
+
+        #Comment
+        addComment(input: CommentInput) : Comment
+
+        #Like
+        addLike(idPublication: ID!) : Boolean
+        deleteLike(idPublication:ID!) : Boolean
+
     }
 
 `;
